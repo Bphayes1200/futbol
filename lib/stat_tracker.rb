@@ -82,18 +82,17 @@ class StatTracker
 
 #These methods each take a season id as an argument and return the values described
 #Name of the Team with the best ratio of shots to goals for the season, returns a string
-  def teams_by_accuracy(season)
-  #for given season find
+#for given season find
   #only games in this season
 #  find game_teams only of those games
 #
  #use goals.sum/shots.sum
   #all goals/all shots
  #and pluck the largest ratio
-
+  def teams_by_accuracy(season)
     games_for_season = @games.find_all do |game|
-    game[:season] == season
-  end
+      game[:season] == season
+    end
     game_ids = games_for_season.map do |game|
       game[:game_id]
     end
@@ -101,30 +100,45 @@ class StatTracker
      game_ids.include?(game_team[:game_id])
     end
 
-  games_grouped_by_team = games_teams_for_season.group_by do |game_team|
-    game_team[:team_id]
-  end
+    games_grouped_by_team = games_teams_for_season.group_by do |game_team|
+      game_team[:team_id]
+    end
   
-  ratios_grouped_by_team = games_grouped_by_team.map do |team_id, game_teams|
-    goals = game_teams.sum {|game_team| game_team[:goals].to_i} 
-    shots=  game_teams.sum {|game_team| game_team[:shots].to_i}
-    ratio = goals/shots.to_f
-    {team_id =>ratio}
+    ratios_grouped_by_team = games_grouped_by_team.map do |team_id, game_teams|
+      # require 'pry'; binding.pry
+      goals = game_teams.sum {|game_team| game_team[:goals].to_i} 
+      shots=  game_teams.sum {|game_team| game_team[:shots].to_i}
+      ratio = goals/shots.to_f
+      {team_id =>ratio}
+    end
   end
-end
   
 
-def most_accurate_team(season)
-  team_id = teams_by_accuracy(season).max_by do |team, ratio|
-    ratio
-  end.keys.first
+  def most_accurate_team(season)
+    team_id = teams_by_accuracy(season).max_by do |team, ratio|
+      ratio
+      
+    end.keys.first
  
-team = @teams.find do |team|
-  team_id == team[:team_id]
-end
-team[:teamname]
-end
-end
+    team = @teams.find do |team|
+    team_id == team[:team_id]
+    end
+    team[:teamname]
+  end
+
+  def least_accurate_team(season)
+    team_id = teams_by_accuracy(season).min_by do |team, ratio|
+      ratio
+    end.keys.first
+   
+    team = @teams.find do |team|
+    team_id == team[:team_id]
+  end
+    team[:teamname]
+    end
+
+  end
+
 
 
 

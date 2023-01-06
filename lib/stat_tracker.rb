@@ -12,11 +12,11 @@ class StatTracker
     @stat_tracker = StatTracker.new(@data_array)
   end
 
-  def initialize(data_array)
+  def initialize(data_array, games = nil, teams = nil, game_teams = nil)
     @data_array = data_array
-    @games = CSV.read @data_array[0], headers: true, header_converters: :symbol
-    @teams = CSV.read @data_array[1], headers: true, header_converters: :symbol
-    @game_teams = CSV.read @data_array[2], headers: true, header_converters: :symbol
+    @games = games || CSV.read(@data_array[0], headers: true, header_converters: :symbol)
+    @teams = teams || CSV.read(@data_array[1], headers: true, header_converters: :symbol)
+    @game_teams = game_teams || CSV.read(@data_array[2], headers: true, header_converters: :symbol)
   end
 
   def highest_total_score
@@ -91,13 +91,10 @@ class StatTracker
     games_teams_for_season = @game_teams.find_all do |game_team|
      game_ids.include?(game_team[:game_id])
     end
-
     games_grouped_by_team = games_teams_for_season.group_by do |game_team|
       game_team[:team_id]
     end
-  
     ratios_grouped_by_team = games_grouped_by_team.map do |team_id, game_teams|
-      # require 'pry'; binding.pry
       goals = game_teams.sum {|game_team| game_team[:goals].to_i} 
       shots=  game_teams.sum {|game_team| game_team[:shots].to_i}
       ratio = goals/shots.to_f

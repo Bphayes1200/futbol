@@ -53,13 +53,27 @@ RSpec.describe StatTracker do
   end
 
   it "#most_accurate_team" do
-    expect(@stat_tracker.most_accurate_team("20122013")).to eq "FC Dallas"
-    expect(@stat_tracker.most_accurate_team("20142015")).to eq "Toronto FC"
+    game = {season: '20222023', game_id: '1'}
+    team_1 = {team_id: '1', teamname: 'butts'}
+    team_2 = {team_id: '2', teamname: 'assface'}
+    game_team_1 = {game_id: '1', team_id: '1', goals: '1', shots: '5'}
+    game_team_2 = {game_id: '1', team_id: '2', goals: '0', shots: '6'}
+    stat_tracker =StatTracker.new([], [game,], [team_1, team_2], [game_team_1, game_team_2])
+    
+    expect(stat_tracker.most_accurate_team("20222023")).to eq "butts"
   end
 
-  xit "#least_accurate_team" do
-    expect(@stat_tracker.least_accurate_team("20132014")).to eq "New York City FC"
-  #   expect(@stat_tracker.least_accurate_team("20142015")).to eq "Columbus Crew SC"
+  it "#least_accurate_team" do
+    game = {season: '20222023', game_id: '1'}
+    team_1 = {team_id: '1', teamname: 'butts'}
+    team_2 = {team_id: '2', teamname: 'assface'}
+    game_team_1 = {game_id: '1', team_id: '1', goals: '1', shots: '5'}
+    game_team_2 = {game_id: '1', team_id: '2', goals: '0', shots: '6'}
+    stat_tracker =StatTracker.new([], [game,], [team_1, team_2], [game_team_1, game_team_2])
+    expect(stat_tracker.least_accurate_team("20222023")).to eq "assface"
+    
+  end
+  
   it 'will calculate the highest scoring visitor' do 
     expect(@stat_tracker.highest_scoring_visitor).to eq("FC Dallas")
   end

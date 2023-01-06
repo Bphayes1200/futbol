@@ -218,12 +218,11 @@ class StatTracker
     end.keys.first
    
     team = @teams.find do |team|
-    team_id == team[:team_id]
-  end
-    team[:teamname]
+      team_id == team[:team_id]
     end
-
+    team[:teamname]
   end
+
   def highest_scoring_visitor
     scoring_breakdown = {}
     teams = @teams.map { |team| team[:team_id] }

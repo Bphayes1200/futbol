@@ -1,9 +1,5 @@
-git add{
+{
   "result": {
-<<<<<<< HEAD
     "line": 90.9
-=======
-    "line": 98.98
->>>>>>> main
   }
 }

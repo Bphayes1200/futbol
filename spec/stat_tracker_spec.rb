@@ -1,3 +1,4 @@
+require './spec_helper'
 require './lib/stat_tracker'
 
 RSpec.describe StatTracker do
@@ -36,15 +37,6 @@ RSpec.describe StatTracker do
       "20142015" => 2, 
       "20132014" => 1
     })  
-
-    #   "20122013"=>806,
-    #   "20162017"=>1317,
-    #   "20142015"=>1319,
-    #   "20152016"=>1321,
-    #   "20132014"=>1323,
-    #   "20172018"=>1355
-    # }) 
-    # expect(@stat_tracker.count_of_games_by_season(20122013)).to eq(6)
   end
 
   it "calculates home win %" do
@@ -68,5 +60,18 @@ RSpec.describe StatTracker do
   xit "#least_accurate_team" do
     expect(@stat_tracker.least_accurate_team("20132014")).to eq "New York City FC"
   #   expect(@stat_tracker.least_accurate_team("20142015")).to eq "Columbus Crew SC"
+  it 'will calculate the highest scoring visitor' do 
+    expect(@stat_tracker.highest_scoring_visitor).to eq("FC Dallas")
+  end
+
+  it 'will calculate the lowest scoring visitor' do 
+    expect(@stat_tracker.lowest_scoring_visitor).to eq("FC Dallas")
+  end
+
+  it 'will calculate the highest scoring home team' do 
+    expect(@stat_tracker.highest_scoring_home_team).to eq("Montreal Impact")
+  end
+  it 'will calculate the lowest scoring home team' do 
+    expect(@stat_tracker.lowest_scoring_home_team).to eq("Montreal Impact")
   end
 end

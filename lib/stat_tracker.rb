@@ -161,6 +161,63 @@ class StatTracker
     (tally.to_f / @game_teams.count.to_f).round(2)
   end
 
+  def winningest_coach(season_id)
+    wins_hash = Hash.new(0)
+    total_games_hash = Hash.new(0)
+    games_list = list_games_by_season(season_id)
+    @game_teams.each do |row|
+      if games_list.include?(row[:game_id])
+        wins_hash[row[:head_coach]] += 1 if row[:result] == "WIN"
+        total_games_hash[row[:head_coach]] += 1 if row[:result]
+      end
+    end
+
+    additional_hash = {}
+    total_games_hash.each do |key, value|
+      wins_hash.each do |key_v, value_v|
+        if key == key_v
+          percent = (value_v / value.to_f)
+          additional_hash[key] = percent
+        end
+      end
+    end
+    additional_hash.max_by{|k,v| v}[0]
+  end
+
+  def worst_coach(season_id)
+    wins_hash = Hash.new(0)
+    total_games_hash = Hash.new(0)
+    games_list = list_games_by_season(season_id)
+
+    @game_teams.each do |row|
+      if games_list.include?(row[:game_id])
+        wins_hash[row[:head_coach]] += 1 if row[:result] == "WIN"
+        wins_hash[row[:head_coach]] += 0 if row[:result]
+        total_games_hash[row[:head_coach]] += 1 if row[:result]
+      end
+    end
+
+    additional_hash = {}
+    total_games_hash.each do |key, value|
+      wins_hash.each do |key_v, value_v|
+        if key == key_v
+          percent = (value_v / value.to_f)
+          additional_hash[key] = percent
+        end
+      end
+    end
+    #require 'pry'; binding.pry
+    additional_hash.min_by{|k,v| v}[0]
+  end
+
+  def list_games_by_season(season_id)
+    games_list = []
+    @games.each do |row|
+      games_list << row[:game_id] if row[:season] == season_id
+    end
+    games_list
+  end
+
   def highest_scoring_visitor
     scoring_breakdown = {}
     teams = @teams.map { |team| team[:team_id] }
@@ -391,8 +448,7 @@ class StatTracker
 
     team_id_to_name(favorite_opponent_id)
   end
-
-  # 
+   
   def most_goals_scored(team_id)
     sorted_list = {}
     teamid = @game_teams.find_all do |game|

@@ -1,7 +1,6 @@
 require './spec_helper'
 require './lib/stat_tracker'
 
-
 RSpec.describe StatTracker do
   before(:all) do
     game_path = './data/sample_games.csv'
@@ -21,43 +20,46 @@ RSpec.describe StatTracker do
     expect(@stat_tracker).to be_an_instance_of StatTracker
   end
 
-
   it 'can calculate the average goals per game' do 
-    expect(@stat_tracker.average_goals_per_game).to eq(4.3)
+    expect(@stat_tracker.average_goals_per_game).to eq(3.4)
   end
 
   it 'will calculate the average goals per game by season' do 
-    # expect(@stat_tracker.average_goals_by_season).to be_a(Hash)
     expect(@stat_tracker.average_goals_by_season["20122013"]).to eq(4.5)
   end
 
   it 'counts the number of games by season' do
     expect(@stat_tracker.count_of_games_by_season).to eq({
 
-      "20122013"=>10, 
-      "20132014"=>10, 
-      "20142015"=>10
+      "20122013"=> 2, 
+      "20142015" => 2, 
+      "20132014" => 1
     })  
   end
 
   it "calculates home win %" do
-    expect(@stat_tracker.percentage_home_wins).to eq  0.48
+    expect(@stat_tracker.percentage_home_wins).to eq 0.60
   end
 
   it 'calculates visitor win %' do
-    expect(@stat_tracker.percentage_visitor_wins).to eq 0.32
+    expect(@stat_tracker.percentage_visitor_wins).to eq 0.40
   end
 
   it 'calculates percent of ties' do
     expect(@stat_tracker.percentage_ties).to eq 0.19
   end
 
+  it 'names winningest coach of the season' do
+    expect(@stat_tracker.winningest_coach("20132014")).to eq("Lindy Ruff")
+    expect(@stat_tracker.winningest_coach("20122013")).to eq("Joel Quenneville")
+  end
+  
   it 'will calculate the highest scoring visitor' do 
-    expect(@stat_tracker.highest_scoring_visitor).to eq("Sporting Kansas City")
+    expect(@stat_tracker.highest_scoring_visitor).to eq("FC Dallas")
   end
 
   it 'will calculate the lowest scoring visitor' do 
-    expect(@stat_tracker.lowest_scoring_visitor).to eq("Columbus Crew SC")
+    expect(@stat_tracker.lowest_scoring_visitor).to eq("FC Dallas")
   end
 
   it 'will calculate the highest scoring home team' do 
@@ -67,6 +69,31 @@ RSpec.describe StatTracker do
     expect(@stat_tracker.lowest_scoring_home_team).to eq("Minnesota United FC")
   end
 
+  it 'will calculate the lowest scoring home team' do 
+    expect(@stat_tracker.lowest_scoring_home_team).to eq("Minnesota United FC")
+  end
+
+  it 'will calculate the worst coach' do
+    expect(@stat_tracker.worst_coach("20122013")).to eq("Bob Hartley")
+    expect(@stat_tracker.worst_coach("20132014")).to eq("Craig Berube")
+  end
+
+  it 'will calculate average win percentage' do
+    expect(@stat_tracker.average_win_percentage("6")).to eq 1.0
+    expect(@stat_tracker.average_win_percentage("25")).to eq 0.4
+  end
+
+  it 'will display team info' do
+    expected = {
+      "team_id" => "18",
+      "franchise_id" => "34",
+      "team_name" => "Minnesota United FC",
+      "abbreviation" => "MIN",
+      "link" => "/api/v1/teams/18"
+    }
+    expect(@stat_tracker.team_info("18")).to eq expected
+  end
+  
   it "can calculate the season with the highest win percentage for a team" do
     expect(@stat_tracker.best_season("4")).to eq("20142015")
   end

@@ -39,9 +39,6 @@ class StatTracker
     @teams.find { |team| team[:team_id] == id }[:teamname]
   end
 
-
-  
-
   def best_offense
     hash1 = nested_hash_creator
     hash2 = Hash.new(0)
@@ -115,7 +112,6 @@ class StatTracker
     team_id_to_name(lowest_tackling_team_id)
   end
 
-
   def list_games_by_season(season_id)
     games_list = []
     @games.each do |row|
@@ -123,8 +119,6 @@ class StatTracker
     end
     games_list
   end
-
-
 
   def average_goals_by_season
     average_goals_by_season = {}
@@ -138,10 +132,10 @@ class StatTracker
     average_goals_by_season
   end 
 
-   def count_of_games_by_season
+  def count_of_games_by_season
     count_of_games_by_season = Hash.new(0)
          seasons = @games.map { |row| row[:season]}.tally
-   end
+  end
 
   def percentage_home_wins
     tally = 0
@@ -166,7 +160,64 @@ class StatTracker
     end
     (tally.to_f / @game_teams.count.to_f).round(2)
   end
+  
+  def winningest_coach(season_id)
+    wins_hash = Hash.new(0)
+    total_games_hash = Hash.new(0)
+    games_list = list_games_by_season(season_id)
+    @game_teams.each do |row|
+      if games_list.include?(row[:game_id])
+        wins_hash[row[:head_coach]] += 1 if row[:result] == "WIN"
+        total_games_hash[row[:head_coach]] += 1 if row[:result]
+      end
+    end
+    
+    additional_hash = {}
+    total_games_hash.each do |key, value|
+      wins_hash.each do |key_v, value_v|
+        if key == key_v
+          percent = (value_v / value.to_f)
+          additional_hash[key] = percent
+        end
+      end
+    end
+    additional_hash.max_by{|k,v| v}[0]
+  end
+  
+  def worst_coach(season_id)
+    wins_hash = Hash.new(0)
+    total_games_hash = Hash.new(0)
+    games_list = list_games_by_season(season_id)
+    
+    @game_teams.each do |row|
+      if games_list.include?(row[:game_id])
+        wins_hash[row[:head_coach]] += 1 if row[:result] == "WIN"
+        wins_hash[row[:head_coach]] += 0 if row[:result]
+        total_games_hash[row[:head_coach]] += 1 if row[:result]
+      end
+    end
+    
+    additional_hash = {}
+    total_games_hash.each do |key, value|
+      wins_hash.each do |key_v, value_v|
+        if key == key_v
+          percent = (value_v / value.to_f)
+          additional_hash[key] = percent
+        end
+      end
+    end
+    #require 'pry'; binding.pry
+    additional_hash.min_by{|k,v| v}[0]
+  end
 
+  def list_games_by_season(season_id)
+    games_list = []
+    @games.each do |row|
+      games_list << row[:game_id] if row[:season] == season_id
+    end
+    games_list
+  end
+  
   def highest_scoring_visitor
     scoring_breakdown = {}
     teams = @teams.map { |team| team[:team_id] }
@@ -246,6 +297,21 @@ class StatTracker
     final_team[0][:teamname]
   end
 
+  def team_info(team_id)
+    info = @teams.find {|team| team[:team_id] == team_id}
+    { 'team_id' => info[:team_id], 'franchise_id' => info[:franchiseid], 'team_name' => info[:teamname], 'abbreviation' => info[:abbreviation], 'link' => info[:link] }
+  end
+
+  def average_win_percentage(team_id)
+    games_by_team = @game_teams.find_all {|game| game[:team_id] == team_id}
+    total = games_by_team.count
+    wins = 0
+    games_by_team.each do |game|
+      wins += 1 if game[:result] == "WIN"
+    end
+    (wins/total.to_f).round(2)
+  end
+
   def best_season(team_id)
     games_won_and_played_hash = nested_hash_creator
     chosen_teams_games = @game_teams.find_all {|game| game[:team_id] == team_id }
@@ -262,7 +328,6 @@ class StatTracker
       [key, value["wins"].to_f / (value["wins"].to_f + value["not wins"].to_f )]
     end  
     win_percents_by_season.max_by{|k,v| v}[0]
-  
   end
 
   def worst_season(team_id)
@@ -384,15 +449,3 @@ class StatTracker
     team_id_to_name(favorite_opponent_id)
   end
 end
-
-
-
-
-
-
-
-
-
-
-
-

@@ -328,7 +328,28 @@ class StatTracker
   end
 
   # 
-  
+  def most_goals_scored(team_id)
+    sorted_list = {}
+    teamid = @game_teams.find_all do |game|
+      game[:team_id] == team_id
+    end
+     most_goals = teamid.map do |game|
+        game[:goals]
+    end
+    most_goals.max.to_i
+  end
+
+  def fewest_goals_scored(team_id)
+    sorted_list = {}
+    teamid = @game_teams.find_all do |game|
+      game[:team_id] == team_id
+    end
+     most_goals = teamid.map do |game|
+        game[:goals]
+    end
+    most_goals.min.to_i
+  end
+end
 
 
     

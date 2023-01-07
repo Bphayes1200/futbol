@@ -8,9 +8,9 @@ RSpec.describe StatTracker do
     team_path = './data/teams.csv'
     game_teams_path = './data/sample_game_teams.csv'
 
-    locations = {
-      games: game_path,
-      teams: team_path,
+    locations = { 
+      games: game_path, 
+      teams: team_path, 
       game_teams: game_teams_path
     }
 
@@ -26,7 +26,7 @@ RSpec.describe StatTracker do
     expect(@stat_tracker.average_goals_per_game).to eq(3.4)
   end
 
-  xit 'will calculate the average goals per game by season' do 
+  it 'will calculate the average goals per game by season' do 
     # expect(@stat_tracker.average_goals_by_season).to be_a(Hash)
     expect(@stat_tracker.average_goals_by_season["20122013"]).to eq(4)
   end
@@ -34,9 +34,10 @@ RSpec.describe StatTracker do
   it 'counts the number of games by season' do
     expect(@stat_tracker.count_of_games_by_season).to eq({
 
-      "20122013"=> 2, 
-      "20142015" => 2, 
-      "20132014" => 1
+      "20122013"=>2, 
+      "20132014"=>1, 
+      "20142015"=>39
+      
     })  
   end
 
@@ -53,25 +54,11 @@ RSpec.describe StatTracker do
   end
 
   it "#most_accurate_team" do
-    game = {season: '20222023', game_id: '1'}
-    team_1 = {team_id: '1', teamname: 'butts'}
-    team_2 = {team_id: '2', teamname: 'assface'}
-    game_team_1 = {game_id: '1', team_id: '1', goals: '1', shots: '5'}
-    game_team_2 = {game_id: '1', team_id: '2', goals: '0', shots: '6'}
-    stat_tracker =StatTracker.new([], [game,], [team_1, team_2], [game_team_1, game_team_2])
-    
-    expect(stat_tracker.most_accurate_team("20222023")).to eq "butts"
+    expect(@stat_tracker.most_accurate_team("20142015")).to eq("Utah Royals FC")
   end
 
   it "#least_accurate_team" do
-    game = {season: '20222023', game_id: '1'}
-    team_1 = {team_id: '1', teamname: 'butts'}
-    team_2 = {team_id: '2', teamname: 'assface'}
-    game_team_1 = {game_id: '1', team_id: '1', goals: '1', shots: '5'}
-    game_team_2 = {game_id: '1', team_id: '2', goals: '0', shots: '6'}
-    stat_tracker =StatTracker.new([], [game,], [team_1, team_2], [game_team_1, game_team_2])
-    expect(stat_tracker.least_accurate_team("20222023")).to eq "assface"
-    
+    expect(@stat_tracker.least_accurate_team("20142015")).to eq "Columbus Crew SC"
   end
   
   it 'will calculate the highest scoring visitor' do 
@@ -99,5 +86,13 @@ RSpec.describe StatTracker do
 
   it 'will find a teams favorite opponenet' do 
     expeect(@stat_tracker.favorite_opponent(6)).to eq("Sporting Kansas City")
+  end
+
+  it "#most_goals_scored" do
+    expect(@stat_tracker.most_goals_scored("18")).to eq 7
+  end
+
+  it "#fewest_goals_scored" do
+    expect(@stat_tracker.fewest_goals_scored("18")).to eq 0
   end
 end

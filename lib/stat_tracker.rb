@@ -112,7 +112,6 @@ class StatTracker
     team_id_to_name(lowest_tackling_team_id)
   end
 
-
   def list_games_by_season(season_id)
     games_list = []
     @games.each do |row|
@@ -120,8 +119,6 @@ class StatTracker
     end
     games_list
   end
-
-
 
   def average_goals_by_season
     average_goals_by_season = {}
@@ -135,10 +132,10 @@ class StatTracker
     average_goals_by_season
   end 
 
-   def count_of_games_by_season
+  def count_of_games_by_season
     count_of_games_by_season = Hash.new(0)
          seasons = @games.map { |row| row[:season]}.tally
-   end
+  end
 
   def percentage_home_wins
     tally = 0
@@ -162,48 +159,6 @@ class StatTracker
        tally += 1 if (row[:hoa] == "away" && row[:result] == "TIE") || (row[:hoa] == "home" && row[:result] == "TIE")
     end
     (tally.to_f / @game_teams.count.to_f).round(2)
-  end
-
-  def teams_by_accuracy(season)
-    games_for_season = @games.find_all do |game|
-      game[:season] == season
-    end
-    game_ids = games_for_season.map do |game|
-      game[:game_id]
-    end
-    games_teams_for_season = @game_teams.find_all do |game_team|
-     game_ids.include?(game_team[:game_id])
-    end
-    games_grouped_by_team = games_teams_for_season.group_by do |game_team|
-      game_team[:team_id]
-    end
-    ratios_grouped_by_team = games_grouped_by_team.map do |team_id, game_teams|
-        goals = game_teams.sum {|game_team| game_team[:goals].to_i} 
-      shots=  game_teams.sum {|game_team| game_team[:shots].to_i}
-      ratio = goals/shots.to_f
-      {team_id =>ratio}
-    end
-  end
-  
-  def most_accurate_team(season)
-    team_id = teams_by_accuracy(season).max_by do |team_ratio|
-      team_ratio.values     
-    end.keys.first
-    team = @teams.find do |team|
-    team_id == team[:team_id]
-    end
-    team[:teamname]
-  end
-
-  def least_accurate_team(season)
-    team_id = teams_by_accuracy(season).min_by do |team_ratio|
-      team_ratio.values
-    end.keys.first
-   
-    team = @teams.find do |team|
-      team_id == team[:team_id]
-    end
-    team[:teamname]
   end
 
   def highest_scoring_visitor
@@ -285,6 +240,21 @@ class StatTracker
     final_team[0][:teamname]
   end
 
+  def team_info(team_id)
+    info = @teams.find {|team| team[:team_id] == team_id}
+    { 'team_id' => info[:team_id], 'franchise_id' => info[:franchiseid], 'team_name' => info[:teamname], 'abbreviation' => info[:abbreviation], 'link' => info[:link] }
+  end
+
+  def average_win_percentage(team_id)
+    games_by_team = @game_teams.find_all {|game| game[:team_id] == team_id}
+    total = games_by_team.count
+    wins = 0
+    games_by_team.each do |game|
+      wins += 1 if game[:result] == "WIN"
+    end
+    (wins/total.to_f).round(2)
+  end
+
   def best_season(team_id)
     games_won_and_played_hash = nested_hash_creator
     chosen_teams_games = @game_teams.find_all {|game| game[:team_id] == team_id }
@@ -301,7 +271,6 @@ class StatTracker
       [key, value["wins"].to_f / (value["wins"].to_f + value["not wins"].to_f )]
     end  
     win_percents_by_season.max_by{|k,v| v}[0]
-  
   end
 
   def worst_season(team_id)
@@ -323,8 +292,104 @@ class StatTracker
   end
 
   def favorite_opponent(team_id)
+    
     all_wins = @game_teams.find_all { |game| game[:team_id] == team_id && game[:result] == "WIN"}
-    all_wins.tally
+    all_games = @games.find_all { |game| game[:home_team_id] == team_id || game[:away_team_id] == team_id} 
+    all_game_ids = all_wins.map {|game| game[:game_id]}
+
+    all_games_opposing_team_ids = []
+      all_games.each do |game| 
+        if team_id == game[:home_team_id]
+          all_games_opposing_team_ids << game[:away_team_id]
+        else 
+          all_games_opposing_team_ids << game[:home_team_id]
+        end
+      end
+
+    all_games_hash = all_games_opposing_team_ids.tally
+
+    all_games = []
+    all_game_ids.each do |game_id|
+      @games.each do |game| 
+        if game_id == game[:game_id]
+          all_games << game 
+        end
+      end 
+    end 
+
+    opposing_team_ids = []
+      all_games.each do |game| 
+        if team_id == game[:home_team_id]
+          opposing_team_ids << game[:away_team_id]
+        else 
+          opposing_team_ids << game[:home_team_id]
+        end
+      end
+
+    id_hash = opposing_team_ids.tally
+
+    final_breakdown = {}
+    id_hash.each do |id, value| 
+      all_games_hash.each do |game, games_value|
+        if id == game
+          final_breakdown[id] = (value.to_f / games_value.to_f).round(3)
+        end
+      end
+    end
+    favorite_opponent_id = nil
+    final_breakdown.select { |id, win_percentage| favorite_opponent_id = id if win_percentage == final_breakdown.values.max}
+
+    team_id_to_name(favorite_opponent_id)
+  end
+
+  def rival(team_id)
+    all_losses = @game_teams.find_all { |game| game[:team_id] == team_id && game[:result] == "LOSS"}
+    all_games = @games.find_all { |game| game[:home_team_id] == team_id || game[:away_team_id] == team_id} 
+    all_game_ids = all_losses.map {|game| game[:game_id]}
+
+    all_games_opposing_team_ids = []
+      all_games.each do |game| 
+        if team_id == game[:home_team_id]
+          all_games_opposing_team_ids << game[:away_team_id]
+        else 
+          all_games_opposing_team_ids << game[:home_team_id]
+        end
+      end
+
+    all_games_hash = all_games_opposing_team_ids.tally
+
+    all_games = []
+    all_game_ids.each do |game_id|
+      @games.each do |game| 
+        if game_id == game[:game_id]
+          all_games << game 
+        end
+      end 
+    end 
+
+    opposing_team_ids = []
+      all_games.each do |game| 
+        if team_id == game[:home_team_id]
+          opposing_team_ids << game[:away_team_id]
+        else 
+          opposing_team_ids << game[:home_team_id]
+        end
+      end
+
+    id_hash = opposing_team_ids.tally
+
+    final_breakdown = {}
+    id_hash.each do |id, value| 
+      all_games_hash.each do |game, games_value|
+        if id == game
+          final_breakdown[id] = (value.to_f / games_value.to_f).round(3)
+        end
+      end
+    end
+    favorite_opponent_id = nil
+    final_breakdown.select { |id, win_percentage| favorite_opponent_id = id if win_percentage == final_breakdown.values.max}
+
+    team_id_to_name(favorite_opponent_id)
   end
 
   # 
@@ -352,8 +417,6 @@ class StatTracker
 end
 
 
-    
-   
 
 
 

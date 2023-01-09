@@ -111,12 +111,12 @@ RSpec.describe StatTracker do
     expect(@stat_tracker.rival("22")).to eq("Houston Dash")
   end
 
-  it "#most_goals_scored" do
+  it "can find the highest number of goals a team has scored in one game" do
     expect(@stat_tracker.most_goals_scored("18")).to eq 0
     expect(@stat_tracker.most_goals_scored("10")).to eq 2
   end
 
-  it "#fewest_goals_scored" do
+  it "can find the lowest number of goals a team has scored in one game" do
     expect(@stat_tracker.fewest_goals_scored("18")).to eq 0
     expect(@stat_tracker.fewest_goals_scored("1")).to eq 1
   end

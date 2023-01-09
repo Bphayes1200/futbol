@@ -160,7 +160,7 @@ class StatTracker
     end
     (tally.to_f / @game_teams.count.to_f).round(2)
   end
-  
+
   def winningest_coach(season_id)
     wins_hash = Hash.new(0)
     total_games_hash = Hash.new(0)
@@ -171,7 +171,7 @@ class StatTracker
         total_games_hash[row[:head_coach]] += 1 if row[:result]
       end
     end
-    
+
     additional_hash = {}
     total_games_hash.each do |key, value|
       wins_hash.each do |key_v, value_v|
@@ -183,12 +183,12 @@ class StatTracker
     end
     additional_hash.max_by{|k,v| v}[0]
   end
-  
+
   def worst_coach(season_id)
     wins_hash = Hash.new(0)
     total_games_hash = Hash.new(0)
     games_list = list_games_by_season(season_id)
-    
+
     @game_teams.each do |row|
       if games_list.include?(row[:game_id])
         wins_hash[row[:head_coach]] += 1 if row[:result] == "WIN"
@@ -196,7 +196,7 @@ class StatTracker
         total_games_hash[row[:head_coach]] += 1 if row[:result]
       end
     end
-    
+
     additional_hash = {}
     total_games_hash.each do |key, value|
       wins_hash.each do |key_v, value_v|
@@ -217,7 +217,7 @@ class StatTracker
     end
     games_list
   end
-  
+
   def highest_scoring_visitor
     scoring_breakdown = {}
     teams = @teams.map { |team| team[:team_id] }
@@ -448,4 +448,38 @@ class StatTracker
 
     team_id_to_name(favorite_opponent_id)
   end
+   
+  def most_goals_scored(team_id)
+    sorted_list = {}
+    teamid = @game_teams.find_all do |game|
+      game[:team_id] == team_id
+    end
+     most_goals = teamid.map do |game|
+        game[:goals]
+    end
+    most_goals.max.to_i
+  end
+
+  def fewest_goals_scored(team_id)
+    sorted_list = {}
+    teamid = @game_teams.find_all do |game|
+      game[:team_id] == team_id
+    end
+     most_goals = teamid.map do |game|
+        game[:goals]
+    end
+    most_goals.min.to_i
+  end
 end
+
+
+
+
+
+
+
+
+
+
+
+

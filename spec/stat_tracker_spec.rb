@@ -7,9 +7,9 @@ RSpec.describe StatTracker do
     team_path = './data/teams.csv'
     game_teams_path = './data/sample_game_teams.csv'
 
-    locations = {
-      games: game_path,
-      teams: team_path,
+    locations = { 
+      games: game_path, 
+      teams: team_path, 
       game_teams: game_teams_path
     }
 
@@ -31,9 +31,10 @@ RSpec.describe StatTracker do
   it 'counts the number of games by season' do
     expect(@stat_tracker.count_of_games_by_season).to eq({
 
-      "20122013"=> 2, 
-      "20142015" => 2, 
-      "20132014" => 1
+      "20122013"=>2, 
+      "20132014"=>1, 
+      "20142015"=>39
+      
     })  
   end
 
@@ -53,7 +54,7 @@ RSpec.describe StatTracker do
     expect(@stat_tracker.winningest_coach("20132014")).to eq("Lindy Ruff")
     expect(@stat_tracker.winningest_coach("20122013")).to eq("Joel Quenneville")
   end
-  
+
   it 'will calculate the highest scoring visitor' do 
     expect(@stat_tracker.highest_scoring_visitor).to eq("FC Dallas")
   end
@@ -108,5 +109,15 @@ RSpec.describe StatTracker do
 
   it 'will find a teams rival' do 
     expect(@stat_tracker.rival("22")).to eq("Houston Dash")
+  end
+
+  it "#most_goals_scored" do
+    expect(@stat_tracker.most_goals_scored("18")).to eq 0
+    expect(@stat_tracker.most_goals_scored("10")).to eq 2
+  end
+
+  it "#fewest_goals_scored" do
+    expect(@stat_tracker.fewest_goals_scored("18")).to eq 0
+    expect(@stat_tracker.fewest_goals_scored("1")).to eq 1
   end
 end

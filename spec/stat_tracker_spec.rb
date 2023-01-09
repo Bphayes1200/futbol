@@ -120,4 +120,9 @@ RSpec.describe StatTracker do
     expect(@stat_tracker.fewest_goals_scored("18")).to eq 0
     expect(@stat_tracker.fewest_goals_scored("1")).to eq 1
   end
+
+  it "can calculate the highest total score by both teams in a game" do
+    expect(@stat_tracker.highest_total_score).to eq(7)
+  end
+
 end

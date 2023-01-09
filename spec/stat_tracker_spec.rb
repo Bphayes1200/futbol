@@ -111,13 +111,45 @@ RSpec.describe StatTracker do
     expect(@stat_tracker.rival("22")).to eq("Houston Dash")
   end
 
-  it "#most_goals_scored" do
+  it "can find the highest number of goals a team has scored in one game" do
     expect(@stat_tracker.most_goals_scored("18")).to eq 0
     expect(@stat_tracker.most_goals_scored("10")).to eq 2
   end
 
-  it "#fewest_goals_scored" do
+  it "can find the lowest number of goals a team has scored in one game" do
     expect(@stat_tracker.fewest_goals_scored("18")).to eq 0
     expect(@stat_tracker.fewest_goals_scored("1")).to eq 1
+  end
+
+  it "can calculate the highest total score by both teams in a game" do
+    expect(@stat_tracker.highest_total_score).to eq(7)
+  end
+
+  it "can calculate the lowest total score by both teams in a game" do
+    expect(@stat_tracker.lowest_total_score).to eq(1)
+  end
+
+  it "find the team with the best shot ratio in a season" do
+    expect(@stat_tracker.most_accurate_team("20132014")).to eq("Toronto FC")
+  end
+
+  it "find the team with the worst shot ratio in a season" do
+    expect(@stat_tracker.least_accurate_team("20132014")).to eq("Minnesota United FC")
+  end
+
+  it "find the name of the team with the most tackles in a season" do
+    expect(@stat_tracker.most_tackles("20132014")).to eq ("Houston Dash")
+  end
+
+  it "find the name of the team with the least tackles in a season" do
+    expect(@stat_tracker.fewest_tackles("20132014")).to eq("Atlanta United")
+  end
+
+  it "it can find the team with the highest average number of goals scored per game" do
+    expect(@stat_tracker.best_offense).to eq("Chicago Fire")
+  end
+
+  it "it can find the team with the lowest average number of goals scored per game" do
+    expect(@stat_tracker.worst_offense).to eq("Minnesota United FC")
   end
 end

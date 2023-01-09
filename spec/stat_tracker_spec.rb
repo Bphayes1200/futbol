@@ -125,4 +125,9 @@ RSpec.describe StatTracker do
     expect(@stat_tracker.highest_total_score).to eq(7)
   end
 
+  it "can calculate the lowest total score by both teams in a game" do
+    expect(@stat_tracker.lowest_total_score).to eq(1)
+  end
+
+
 end

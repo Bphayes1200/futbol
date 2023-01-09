@@ -470,9 +470,52 @@ class StatTracker
     end
     most_goals.min.to_i
   end
+
+def teams_by_accuracy(season)
+  games_for_season = @games.find_all do |game|
+    game[:season] == season
+  end
+  game_ids = games_for_season.map do |game|
+    game[:game_id]
+  end
+  games_teams_for_season = @game_teams.find_all do |game_team|
+   game_ids.include?(game_team[:game_id])
+  end
+  games_grouped_by_team = games_teams_for_season.group_by do |game_team|
+    game_team[:team_id]
+  end
+  ratios_grouped_by_team = games_grouped_by_team.map do |team_id, game_teams|
+    goals = game_teams.sum {|game_team| game_team[:goals].to_i} 
+    shots=  game_teams.sum {|game_team| game_team[:shots].to_i}
+    ratio = goals/shots.to_f
+    {team_id =>ratio}
+  end
 end
 
+def most_accurate_team(season)
+  team_id = teams_by_accuracy(season).max_by do |team_ratio|
 
+    team_ratio.values
+
+  end.keys.first
+
+  team = @teams.find do |team|
+    team_id == team[:team_id]
+  end
+  team[:teamname]
+end
+
+def least_accurate_team(season)
+  team_id = teams_by_accuracy(season).min_by do |team_ratio|
+    team_ratio.values
+  end.keys.first
+
+  team = @teams.find do |team|
+  team_id == team[:team_id]
+  end
+  team[:teamname]
+  end
+end
 
 
 

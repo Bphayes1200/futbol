@@ -145,5 +145,9 @@ RSpec.describe StatTracker do
     expect(@stat_tracker.fewest_tackles("20132014")).to eq("Atlanta United")
   end
 
+  it "it can find the team with the highest average number of goals scored per game" do
+    expect(@stat_tracker.best_offense).to eq("Chicago Fire")
+  end
+
 
 end

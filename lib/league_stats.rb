@@ -11,8 +11,8 @@ class LeagueStats < Stats
     hash1 = nested_hash_creator
     hash2 = Hash.new(0)
     game_teams.each do |row|
-      hash1[row[:team_id]][:games] += 1
-      hash1[row[:team_id]][:goals] += row[:goals].to_i
+      hash1[row.team_id][:games] += 1
+      hash1[row.team_id][:goals] += row.goals.to_i
     end
     hash1.each do |key, value|
       hash2[key] =  value[:goals].to_f / value[:games].to_f
@@ -31,8 +31,8 @@ class LeagueStats < Stats
     hash1 = nested_hash_creator
     hash2 = Hash.new(0)
     game_teams.each do |row|
-      hash1[row[:team_id]][:games] += 1
-      hash1[row[:team_id]][:goals] += row[:goals].to_i
+      hash1[row.team_id][:games] += 1
+      hash1[row.team_id][:goals] += row.goals.to_i
     end
     hash1.each do |key, value|
       hash2[key] =  value[:goals].to_f / value[:games].to_f
@@ -48,10 +48,10 @@ class LeagueStats < Stats
 
   def highest_scoring_visitor
     scoring_breakdown = {}
-    teams = @teams.map { |team| team[:team_id] }
+    teams = @teams.map { |team| team.team_id }
     teams.each do |team|
-      all_away_games = @games.find_all { |game| game[:away_team_id] == team}
-        total_goals = all_away_games.map { |away_game| away_game[:away_goals].to_i}.sum
+      all_away_games = @games.find_all { |game| game.away_team_id == team}
+        total_goals = all_away_games.map { |away_game| away_game.away_goals.to_i}.sum
         if all_away_games.count != 0
         average_away_goals = total_goals.to_f / all_away_games.count.to_f
         scoring_breakdown[team] = average_away_goals.to_f.round(2)
@@ -62,16 +62,16 @@ class LeagueStats < Stats
 
     leading_team_id = nil
     scoring_breakdown.each { |key, value| leading_team_id = key if  value == scoring_breakdown.values.max }
-    final_team = @teams.select { |team| team[:team_id] == leading_team_id}
-    final_team[0][:teamname]
+
+    team_id_to_name(leading_team_id)
   end
 
   def lowest_scoring_visitor 
     scoring_breakdown = {}
-    teams = @teams.map { |team| team[:team_id] }
+    teams = @teams.map { |team| team.team_id }
     teams.each do |team|
-      all_away_games = @games.find_all { |game| game[:away_team_id] == team}
-        total_goals = all_away_games.map { |away_game| away_game[:away_goals].to_i}.sum
+      all_away_games = @games.find_all { |game| game.away_team_id == team}
+        total_goals = all_away_games.map { |away_game| away_game.away_goals.to_i}.sum
         if all_away_games.count != 0
         average_away_goals = total_goals.to_f / all_away_games.count.to_f
         scoring_breakdown[team] = average_away_goals.to_f.round(3)
@@ -82,16 +82,16 @@ class LeagueStats < Stats
 
     last_team_id = nil
     scoring_breakdown.each { |key, value| last_team_id = key if  value == scoring_breakdown.values.min}
-    final_team = @teams.select { |team| team[:team_id] == last_team_id}
-    final_team[0][:teamname]
+   
+    team_id_to_name(last_team_id)
   end
 
   def highest_scoring_home_team
     scoring_breakdown = {}
-    teams = @teams.map { |team| team[:team_id] }
+    teams = @teams.map { |team| team.team_id }
     teams.each do |team|
-      all_home_games = @games.find_all { |game| game[:home_team_id] == team}
-        total_goals = all_home_games.map { |home_game| home_game[:home_goals].to_i}.sum
+      all_home_games = @games.find_all { |game| game.home_team_id == team}
+        total_goals = all_home_games.map { |home_game| home_game.home_goals.to_i}.sum
         if all_home_games.count != 0
         average_home_goals = total_goals.to_f / all_home_games.count.to_f
         scoring_breakdown[team] = average_home_goals.to_f.round(2)
@@ -102,16 +102,16 @@ class LeagueStats < Stats
 
     leading_team_id = nil
     scoring_breakdown.each { |key, value| leading_team_id = key if  value == scoring_breakdown.values.max }
-    final_team = @teams.select { |team| team[:team_id] == leading_team_id}
-    final_team[0][:teamname]
+   
+    team_id_to_name(leading_team_id)
   end
 
   def lowest_scoring_home_team
     scoring_breakdown = {}
-    teams = @teams.map { |team| team[:team_id] }
+    teams = @teams.map { |team| team.team_id }
     teams.each do |team|
-      all_home_games = @games.find_all { |game| game[:home_team_id] == team}
-        total_goals = all_home_games.map { |home_game| home_game[:home_goals].to_i}.sum
+      all_home_games = @games.find_all { |game| game.home_team_id == team}
+        total_goals = all_home_games.map { |home_game| home_game.home_goals.to_i}.sum
         if all_home_games.count != 0
         average_home_goals = total_goals.to_f / all_home_games.count.to_f
         scoring_breakdown[team] = average_home_goals.to_f.round(3)
@@ -121,7 +121,7 @@ class LeagueStats < Stats
     end 
     last_team_id = nil
     scoring_breakdown.each { |key, value| last_team_id = key if  value == scoring_breakdown.values.min}
-    final_team = @teams.select { |team| team[:team_id] == last_team_id}
-    final_team[0][:teamname]
+   
+    team_id_to_name(last_team_id)
   end
 end

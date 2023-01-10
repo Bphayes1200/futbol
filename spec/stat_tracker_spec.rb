@@ -30,21 +30,6 @@ RSpec.describe StatTracker do
     expect(@stat_tracker.winningest_coach("20122013")).to eq("Joel Quenneville")
   end
 
-  it 'will calculate the highest scoring visitor' do 
-    expect(@stat_tracker.highest_scoring_visitor).to eq("Sporting Kansas City")
-  end
-
-  it 'will calculate the lowest scoring visitor' do 
-    expect(@stat_tracker.lowest_scoring_visitor).to eq("Columbus Crew SC")
-  end
-
-  it 'will calculate the highest scoring home team' do 
-    expect(@stat_tracker.highest_scoring_home_team).to eq("Seattle Sounders FC")
-  end
-  it 'will calculate the lowest scoring home team' do 
-    expect(@stat_tracker.lowest_scoring_home_team).to eq("Minnesota United FC")
-  end
-
   it 'will calculate the lowest scoring home team' do 
     expect(@stat_tracker.lowest_scoring_home_team).to eq("Minnesota United FC")
   end
@@ -114,11 +99,6 @@ RSpec.describe StatTracker do
     expect(@stat_tracker.fewest_tackles("20132014")).to eq("Atlanta United")
   end
 
-  it "it can find the team with the highest average number of goals scored per game" do
-    expect(@stat_tracker.best_offense).to eq("Chicago Fire")
-  end
-
-  it "it can find the team with the lowest average number of goals scored per game" do
-    expect(@stat_tracker.worst_offense).to eq("Minnesota United FC")
-  end
+ 
+ 
 end

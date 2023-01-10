@@ -11,19 +11,8 @@ class TeamStats < Stats
   def best_season(team_id)
     games_won_and_played_hash = nested_hash_creator
     chosen_teams_games = choose_teams_by_id(team_id)
-    chosen_teams_games.each do |game|
-      @games.each do |row|
-        if game.game_id == row.game_id && game.result == 'WIN'
-        games_won_and_played_hash[row.season]['wins'] += 1 
-        elsif game.game_id == row.game_id
-        games_won_and_played_hash[row.season]['not wins'] += 1
-        end
-      end
-    end
-    win_percents_by_season = games_won_and_played_hash.map do |key, value|
-      [key, value["wins"].to_f / (value["wins"].to_f + value["not wins"].to_f )]
-    end  
-    win_percents_by_season.max_by{|k,v| v}[0]
+    add_games_won_and_played(chosen_teams_games, games_won_and_played_hash)
+    calc_win_percent_by_season(games_won_and_played_hash).max_by{|k,v| v}[0]
   end
 
   def choose_teams_by_id(team_id)

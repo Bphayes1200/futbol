@@ -1,4 +1,3 @@
-require 'csv'
 require_relative 'spec_helper'
 require './lib/game_stats'
 require './lib/game'
@@ -31,7 +30,7 @@ RSpec.describe StatTracker do
   end
 
   it "exists" do
-    expect()
+    expect(@team_stats).to be_an_instance_of(TeamStats)
   end
   
   it "can calculate the season with the highest win percentage for a team" do

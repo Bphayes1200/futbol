@@ -22,14 +22,12 @@ class GameStats < Stats
 
   def percentage_ties
     tally = 0 
-    @game_teams.find_all { |row|
-    tally += 1 if (row.hoa == "away" && row.result == "TIE") || (row.hoa == "home" && row.result == "TIE") } 
+    @game_teams.find_all { |row| tally += 1 if (row.hoa == "away" && row.result == "TIE") || (row.hoa == "home" && row.result == "TIE") } 
     (tally.to_f / @game_teams.count.to_f).round(2)
   end
 
   def count_of_games_by_season
-    count_of_games_by_season = Hash.new(0)
-         seasons = @games.map { |row| row.season}.tally
+    seasons = @games.map { |row| row.season}.tally
   end
 
   def average_goals_per_game

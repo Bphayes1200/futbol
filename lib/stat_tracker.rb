@@ -10,9 +10,10 @@ require_relative 'season_stats'
 
 
 class StatTracker
-  attr_reader :games,
-              :teams,
-              :game_teams
+  attr_reader :game_stats,
+              :team_stats,
+              :league_stats,
+              :season_stats
 
   def self.from_csv(locations)
     @stat_tracker = StatTracker.new(info)
@@ -24,13 +25,6 @@ class StatTracker
     @league_stats = LeagueStats.new(info)
     @season_stats = SeasonStats.new(info)
   end
-
-  # # def initialize(data_array)
-  #   @data_array = data_array
-  #   @games = CSV.read @data_array[0], headers: true, header_converters: :symbol
-  #   @teams = CSV.read @data_array[1], headers: true, header_converters: :symbol
-  #   @game_teams = CSV.read @data_array[2], headers: true, header_converters: :symbol
-  # end
 
   def highest_total_score
     @games.map {|row| row[:home_goals].to_i + row[:away_goals].to_i}.max
@@ -219,7 +213,6 @@ class StatTracker
         end
       end
     end
-    #require 'pry'; binding.pry
     additional_hash.min_by{|k,v| v}[0]
   end
 

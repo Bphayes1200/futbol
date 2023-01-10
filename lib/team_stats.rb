@@ -45,11 +45,11 @@ class TeamStats < Stats
   end
 
   def average_win_percentage(team_id)
-    games_by_team = @game_teams.find_all {|game| game[:team_id] == team_id}
+    games_by_team = @game_teams.find_all {|game| game.team_id == team_id}
     total = games_by_team.count
     wins = 0
     games_by_team.each do |game|
-      wins += 1 if game[:result] == "WIN"
+      wins += 1 if game.result == "WIN"
     end
     (wins/total.to_f).round(2)
   end
@@ -157,10 +157,10 @@ class TeamStats < Stats
   def most_goals_scored(team_id)
     sorted_list = {}
     teamid = @game_teams.find_all do |game|
-      game[:team_id] == team_id
+      game.team_id == team_id
     end
      most_goals = teamid.map do |game|
-        game[:goals]
+        game.goals
     end
     most_goals.max.to_i
   end

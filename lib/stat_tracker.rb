@@ -57,7 +57,6 @@ class StatTracker
     @game_stats.average_goals_by_season
   end
 
-  # LEAGUE STATISTICS
   def count_of_teams
     @league_stats.count_of_teams
   end
@@ -86,7 +85,6 @@ class StatTracker
     @league_stats.lowest_scoring_home_team
   end
 
-  # SEASON STATISTICS
   def winningest_coach(season_id)
     @season_stats.winningest_coach(season_id)
   end
@@ -111,7 +109,6 @@ class StatTracker
     @season_stats.fewest_tackles(season_id)
   end
 
-  # TEAM STATISTICS
   def team_info(team_id)
     @team_stats.team_info(team_id)
   end

@@ -1,6 +1,6 @@
 require_relative 'calculable'
 
-class TeamStats
+class TeamStats < Stats
   include Calculable
 
   def team_info(team_id)

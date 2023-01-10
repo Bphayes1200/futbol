@@ -1,7 +1,7 @@
 class GameStats < Stats
 
   def highest_total_score
-    @games.map {|row| row[:home_goals].to_i + row[:away_goals].to_i}.max
+    @games.map {|row| row.home_goals.to_i + row.away_goals.to_i}.max
   end
 
   def lowest_total_score

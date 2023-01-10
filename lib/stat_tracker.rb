@@ -8,7 +8,6 @@ require_relative 'team_stats'
 require_relative 'league_stats'
 require_relative 'season_stats'
 
-
 class StatTracker
   attr_reader :game_stats,
               :team_stats,
@@ -25,16 +24,6 @@ class StatTracker
     @league_stats = LeagueStats.new(info)
     @season_stats = SeasonStats.new(info)
   end
-
-  
-
-  
-
-  
-
-  
-
- 
 end
 
 

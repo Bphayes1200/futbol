@@ -55,16 +55,16 @@ class TeamStats < Stats
   end
 
   def favorite_opponent(team_id)
-    all_wins = @game_teams.find_all { |game| game[:team_id] == team_id && game[:result] == "WIN"}
-    all_games = @games.find_all { |game| game[:home_team_id] == team_id || game[:away_team_id] == team_id} 
-    all_game_ids = all_wins.map {|game| game[:game_id]}
+    all_wins = @game_teams.find_all { |game| game.team_id == team_id && game.result == "WIN"}
+    all_games = @games.find_all { |game| game.home_team_id == team_id || game.away_team_id == team_id} 
+    all_game_ids = all_wins.map {|game| game.game_id}
 
     all_games_opposing_team_ids = []
       all_games.each do |game| 
-        if team_id == game[:home_team_id]
-          all_games_opposing_team_ids << game[:away_team_id]
+        if team_id == game.home_team_id
+          all_games_opposing_team_ids << game.away_team_id
         else 
-          all_games_opposing_team_ids << game[:home_team_id]
+          all_games_opposing_team_ids << game.home_team_id
         end
       end
 
@@ -73,7 +73,7 @@ class TeamStats < Stats
     all_games = []
     all_game_ids.each do |game_id|
       @games.each do |game| 
-        if game_id == game[:game_id]
+        if game_id == game.game_id
           all_games << game 
         end
       end 
@@ -81,10 +81,10 @@ class TeamStats < Stats
 
     opposing_team_ids = []
       all_games.each do |game| 
-        if team_id == game[:home_team_id]
-          opposing_team_ids << game[:away_team_id]
+        if team_id == game.home_team_id
+          opposing_team_ids << game.away_team_id
         else 
-          opposing_team_ids << game[:home_team_id]
+          opposing_team_ids << game.home_team_id
         end
       end
 

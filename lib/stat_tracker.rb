@@ -24,6 +24,10 @@ class StatTracker
     @league_stats = LeagueStats.new(data)
     @season_stats = SeasonStats.new(data)
   end
+
+  def highest_total_score
+    @game_stats.highest_total_score
+  end
 end
 
 

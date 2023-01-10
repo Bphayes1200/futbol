@@ -4,13 +4,13 @@ module Calculable
   end
 
   def team_id_to_name(id)
-    @teams.find { |team| team[:team_id] == id }[:teamname]
+    @teams.find { |team| team.team_id == id }.teamname
   end
 
   def list_games_by_season(season_id)
     games_list = []
     @games.each do |row|
-      games_list << row[:game_id] if row[:season] == season_id
+      games_list << row.game_id if row.season == season_id
     end
     games_list
   end

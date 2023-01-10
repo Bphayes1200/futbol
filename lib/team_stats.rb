@@ -168,10 +168,10 @@ class TeamStats < Stats
   def fewest_goals_scored(team_id)
     sorted_list = {}
     teamid = @game_teams.find_all do |game|
-      game[:team_id] == team_id
+      game.team_id == team_id
     end
      most_goals = teamid.map do |game|
-        game[:goals]
+        game.goals
     end
     most_goals.min.to_i
   end

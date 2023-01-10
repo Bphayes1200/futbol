@@ -10,13 +10,13 @@ class TeamStats < Stats
 
   def best_season(team_id)
     games_won_and_played_hash = nested_hash_creator
-    chosen_teams_games = choose_teams_by_id(team_id)
+    chosen_teams_games = choose_teams_by_id(@game_teams, team_id)
     add_games_won_and_played(chosen_teams_games, games_won_and_played_hash)
     calc_win_percent_by_season(games_won_and_played_hash).max_by{|k,v| v}[0]
   end
 
-  def choose_teams_by_id(team_id)
-    @game_teams.find_all {|game| game.team_id == team_id }
+  def choose_teams_by_id(data, header)
+    data.find_all {|game| game.team_id == header}
   end
 
   def add_games_won_and_played(chosen_games,destination_hash)
@@ -40,7 +40,7 @@ class TeamStats < Stats
 
   def worst_season(team_id)
     games_won_and_played_hash = nested_hash_creator
-    chosen_teams_games = choose_teams_by_id(team_id)
+    chosen_teams_games = choose_teams_by_id(@game_teams, team_id)
     add_games_won_and_played(chosen_teams_games, games_won_and_played_hash)
     calc_win_percent_by_season(games_won_and_played_hash).min_by{|k,v| v}[0]
   end

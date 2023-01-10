@@ -10,16 +10,19 @@ class TeamStats < Stats
 
   def best_season(team_id)
     games_won_and_played_hash = nested_hash_creator
-    chosen_teams_games = choose_teams_by_id(@game_teams, team_id)
+    chosen_teams_games = choose_objects_by_id(@game_teams, team_id)
     add_games_won_and_played(chosen_teams_games, games_won_and_played_hash)
     calc_win_percent_by_season(games_won_and_played_hash).max_by{|k,v| v}[0]
   end
 
-  def choose_teams_by_id(data, header)
-    data.find_all {|game| game.team_id == header}
+  def worst_season(team_id)
+    games_won_and_played_hash = nested_hash_creator
+    chosen_teams_games = choose_objects_by_id(@game_teams, team_id)
+    add_games_won_and_played(chosen_teams_games, games_won_and_played_hash)
+    calc_win_percent_by_season(games_won_and_played_hash).min_by{|k,v| v}[0]
   end
 
-  def add_games_won_and_played(chosen_games,destination_hash)
+  def add_games_won_and_played(chosen_games, destination_hash)
     chosen_games.each do |game|
       @games.each do |row|
         if game.game_id == row.game_id && game.result == 'WIN'
@@ -36,13 +39,6 @@ class TeamStats < Stats
     win_percents_by_season = games_won_and_played.map do |key, value|
     [key, value["wins"].to_f / (value["wins"].to_f + value["not wins"].to_f )]
     end
-  end
-
-  def worst_season(team_id)
-    games_won_and_played_hash = nested_hash_creator
-    chosen_teams_games = choose_teams_by_id(@game_teams, team_id)
-    add_games_won_and_played(chosen_teams_games, games_won_and_played_hash)
-    calc_win_percent_by_season(games_won_and_played_hash).min_by{|k,v| v}[0]
   end
 
   def average_win_percentage(team_id)

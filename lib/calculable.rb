@@ -4,7 +4,7 @@ module Calculable
   end
 
   def team_id_to_name(id)
-    @teams.find { |team| team.team_id == id }.teamname
+    @teams.find { |team| team.team_id == id }.team_name
   end
 
   def list_games_by_season(season_id)

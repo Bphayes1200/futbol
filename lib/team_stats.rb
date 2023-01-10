@@ -28,13 +28,13 @@ class TeamStats < Stats
 
   def worst_season(team_id)
     games_won_and_played_hash = nested_hash_creator
-    chosen_teams_games = @game_teams.find_all {|game| game[:team_id] == team_id }
+    chosen_teams_games = @game_teams.find_all {|game| game.team_id == team_id }
     chosen_teams_games.each do |game|
       @games.each do |row|
-        if game[:game_id] == row[:game_id] && game[:result] == 'WIN'
-        games_won_and_played_hash[row[:season]]['wins'] += 1 
-        elsif game[:game_id] == row[:game_id]
-        games_won_and_played_hash[row[:season]]['not wins'] += 1
+        if game.game_id == row.game_id && game.result == 'WIN'
+        games_won_and_played_hash[row.season]['wins'] += 1 
+        elsif game.game_id == row.game_id
+        games_won_and_played_hash[row.season]['not wins'] += 1
         end
       end
     end

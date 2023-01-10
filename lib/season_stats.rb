@@ -8,8 +8,8 @@ class SeasonStats < Stats
     games_list = list_games_by_season(season_id)
   
     @game_teams.each do |row|
-      if games_list.include?(row[:game_id])
-        teams_tackles_hash[row[:team_id]] += row[:tackles].to_i
+      if games_list.include?(row.game_id)
+        teams_tackles_hash[row.team_id] += row.tackles.to_i
       end
     end
 
@@ -22,8 +22,8 @@ class SeasonStats < Stats
     games_list = list_games_by_season(season_id)
 
     @game_teams.each do |row|
-      if games_list.include?(row[:game_id])
-        teams_tackles_hash[row[:team_id]] += row[:tackles].to_i
+      if games_list.include?(row.game_id)
+        teams_tackles_hash[row.team_id] += row.tackles.to_i
       end
     end
     
@@ -36,9 +36,9 @@ class SeasonStats < Stats
     total_games_hash = Hash.new(0)
     games_list = list_games_by_season(season_id)
     @game_teams.each do |row|
-      if games_list.include?(row[:game_id])
-        wins_hash[row[:head_coach]] += 1 if row[:result] == "WIN"
-        total_games_hash[row[:head_coach]] += 1 if row[:result]
+      if games_list.include?(row.game_id)
+        wins_hash[row.head_coach] += 1 if row.result == "WIN"
+        total_games_hash[row.head_coach] += 1 if row.result
       end
     end
 
@@ -60,10 +60,10 @@ class SeasonStats < Stats
     games_list = list_games_by_season(season_id)
 
     @game_teams.each do |row|
-      if games_list.include?(row[:game_id])
-        wins_hash[row[:head_coach]] += 1 if row[:result] == "WIN"
-        wins_hash[row[:head_coach]] += 0 if row[:result]
-        total_games_hash[row[:head_coach]] += 1 if row[:result]
+      if games_list.include?(row.game_id)
+        wins_hash[row.head_coach] += 1 if row.result == "WIN"
+        wins_hash[row.head_coach] += 0 if row.result
+        total_games_hash[row.head_coach] += 1 if row.result
       end
     end
 
@@ -81,20 +81,20 @@ class SeasonStats < Stats
 
   def teams_by_accuracy(season)
     games_for_season = @games.find_all do |game|
-      game[:season] == season
+      game.season == season
     end
     game_ids = games_for_season.map do |game|
-      game[:game_id]
+      game.game_id
     end
     games_teams_for_season = @game_teams.find_all do |game_team|
-     game_ids.include?(game_team[:game_id])
+     game_ids.include?(game_team.game_id)
     end
     games_grouped_by_team = games_teams_for_season.group_by do |game_team|
-      game_team[:team_id]
+      game_team.team_id
     end
     ratios_grouped_by_team = games_grouped_by_team.map do |team_id, game_teams|
-      goals = game_teams.sum {|game_team| game_team[:goals].to_i} 
-      shots=  game_teams.sum {|game_team| game_team[:shots].to_i}
+      goals = game_teams.sum {|game_team| game_team.goals.to_i} 
+      shots=  game_teams.sum {|game_team| game_team.shots.to_i}
       ratio = goals/shots.to_f
       {team_id =>ratio}
     end
@@ -108,9 +108,9 @@ class SeasonStats < Stats
     end.keys.first
   
     team = @teams.find do |team|
-      team_id == team[:team_id]
+      team_id == team.team_id
     end
-    team[:teamname]
+    team.team_name
   end
   
   def least_accurate_team(season)
@@ -119,8 +119,8 @@ class SeasonStats < Stats
     end.keys.first
   
     team = @teams.find do |team|
-    team_id == team[:team_id]
+    team_id == team.team_id
     end
-    team[:teamname]
+    team.team_name
     end
 end

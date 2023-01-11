@@ -152,14 +152,7 @@ class TeamStats < Stats
   end
    
   def most_goals_scored(team_id)
-    sorted_list = {}
-    teamid = @game_teams.find_all do |game|
-      game.team_id == team_id
-    end
-     most_goals = teamid.map do |game|
-        game.goals
-    end
-    most_goals.max.to_i
+    choose_objects_by_id(@game_teams, team_id).map { |game| game.goals }.max
   end
 
   def fewest_goals_scored(team_id)

@@ -14,4 +14,8 @@ module Calculable
     end
     games_list
   end
+
+  def choose_objects_by_id(csv_data_set, team_id)
+    csv_data_set.find_all {|game| game.team_id == team_id}
+  end
 end

@@ -4,54 +4,48 @@ class TeamStats < Stats
   include Calculable
 
   def team_info(team_id)
-    info = @teams.find {|team| team.team_id == team_id}
-    { 'team_id' => info.team_id, 'franchise_id' => info.franchise_id, 'team_name' => info.team_name, 'abbreviation' => info.abbreviation, 'link' => info.link }
+    team = choose_objects_by_id(@teams, team_id)[0]
+    { 'team_id' => team.team_id, 'franchise_id' => team.franchise_id, 'team_name' => team.team_name, 'abbreviation' => team.abbreviation, 'link' => team.link }
   end
 
   def best_season(team_id)
     games_won_and_played_hash = nested_hash_creator
-    chosen_teams_games = @game_teams.find_all {|game| game.team_id == team_id }
-    chosen_teams_games.each do |game|
-      @games.each do |row|
-        if game.game_id == row.game_id && game.result == 'WIN'
-        games_won_and_played_hash[row.season]['wins'] += 1 
-        elsif game.game_id == row.game_id
-        games_won_and_played_hash[row.season]['not wins'] += 1
-        end
-      end
-    end
-    win_percents_by_season = games_won_and_played_hash.map do |key, value|
-      [key, value["wins"].to_f / (value["wins"].to_f + value["not wins"].to_f )]
-    end  
-    win_percents_by_season.max_by{|k,v| v}[0]
+    chosen_teams_games = choose_objects_by_id(@game_teams, team_id)
+    add_games_won_and_played(chosen_teams_games, games_won_and_played_hash)
+    calc_win_percent_by_season(games_won_and_played_hash).max_by{|k,v| v}[0]
   end
 
   def worst_season(team_id)
     games_won_and_played_hash = nested_hash_creator
-    chosen_teams_games = @game_teams.find_all {|game| game.team_id == team_id }
-    chosen_teams_games.each do |game|
+    chosen_teams_games = choose_objects_by_id(@game_teams, team_id)
+    add_games_won_and_played(chosen_teams_games, games_won_and_played_hash)
+    calc_win_percent_by_season(games_won_and_played_hash).min_by{|k,v| v}[0]
+  end
+
+  def add_games_won_and_played(chosen_games, destination_hash)
+    chosen_games.each do |game|
       @games.each do |row|
         if game.game_id == row.game_id && game.result == 'WIN'
-        games_won_and_played_hash[row.season]['wins'] += 1 
+          destination_hash[row.season]['wins'] += 1 
         elsif game.game_id == row.game_id
-        games_won_and_played_hash[row.season]['not wins'] += 1
+          destination_hash[row.season]['not wins'] += 1
         end
       end
     end
-    win_percents_by_season = games_won_and_played_hash.map do |key, value|
-      [key, value["wins"].to_f / (value["wins"].to_f + value["not wins"].to_f )]
-    end  
-    win_percents_by_season.min_by{|k,v| v}[0]
+    destination_hash
+  end
+
+  def calc_win_percent_by_season(games_won_and_played)
+    win_percents_by_season = games_won_and_played.map do |key, value|
+    [key, value["wins"].to_f / (value["wins"].to_f + value["not wins"].to_f )]
+    end
   end
 
   def average_win_percentage(team_id)
-    games_by_team = @game_teams.find_all {|game| game.team_id == team_id}
-    total = games_by_team.count
-    wins = 0
-    games_by_team.each do |game|
-      wins += 1 if game.result == "WIN"
-    end
-    (wins/total.to_f).round(2)
+    games_of_team = choose_objects_by_id(@game_teams, team_id)
+    total_games_count = games_of_team.count
+    total_wins_count = games_of_team.find_all {|game| game.result == 'WIN'}.count
+    (total_wins_count.to_f/total_games_count).round(2)
   end
 
   def favorite_opponent(team_id)
@@ -59,13 +53,9 @@ class TeamStats < Stats
     all_games = @games.find_all { |game| game.home_team_id == team_id || game.away_team_id == team_id} 
     all_game_ids = all_wins.map {|game| game.game_id}
 
-    all_games_opposing_team_ids = []
-      all_games.each do |game| 
-        if team_id == game.home_team_id
-          all_games_opposing_team_ids << game.away_team_id
-        else 
-          all_games_opposing_team_ids << game.home_team_id
-        end
+    all_games_opposing_team_ids =
+      all_games.map do |game| 
+        team_id == game.home_team_id ? game.away_team_id : game.home_team_id
       end
 
     all_games_hash = all_games_opposing_team_ids.tally
@@ -73,19 +63,13 @@ class TeamStats < Stats
     all_games = []
     all_game_ids.each do |game_id|
       @games.each do |game| 
-        if game_id == game.game_id
-          all_games << game 
-        end
+        all_games << game if game_id == game.game_id
       end 
     end 
 
-    opposing_team_ids = []
-      all_games.each do |game| 
-        if team_id == game.home_team_id
-          opposing_team_ids << game.away_team_id
-        else 
-          opposing_team_ids << game.home_team_id
-        end
+    opposing_team_ids = 
+      all_games.map do |game| 
+        team_id == game.home_team_id ? game.away_team_id : game.home_team_id
       end
 
     id_hash = opposing_team_ids.tally
@@ -109,13 +93,9 @@ class TeamStats < Stats
     all_games = @games.find_all { |game| game.home_team_id == team_id || game.away_team_id == team_id} 
     all_game_ids = all_losses.map {|game| game.game_id}
 
-    all_games_opposing_team_ids = []
-      all_games.each do |game| 
-        if team_id == game.home_team_id
-          all_games_opposing_team_ids << game.away_team_id
-        else 
-          all_games_opposing_team_ids << game.home_team_id
-        end
+    all_games_opposing_team_ids =
+      all_games.map do |game| 
+        team_id == game.home_team_id ? game.away_team_id : game.home_team_id
       end
 
     all_games_hash = all_games_opposing_team_ids.tally
@@ -123,19 +103,13 @@ class TeamStats < Stats
     all_games = []
     all_game_ids.each do |game_id|
       @games.each do |game| 
-        if game_id == game.game_id
-          all_games << game 
-        end
+        all_games << game if game_id == game.game_id
       end 
     end 
 
-    opposing_team_ids = []
-      all_games.each do |game| 
-        if team_id == game.home_team_id
-          opposing_team_ids << game.away_team_id
-        else 
-          opposing_team_ids << game.home_team_id
-        end
+    opposing_team_ids = 
+      all_games.map do |game| 
+        team_id == game.home_team_id ? game.away_team_id : game.home_team_id
       end
 
     id_hash = opposing_team_ids.tally
@@ -155,24 +129,10 @@ class TeamStats < Stats
   end
    
   def most_goals_scored(team_id)
-    sorted_list = {}
-    teamid = @game_teams.find_all do |game|
-      game.team_id == team_id
-    end
-     most_goals = teamid.map do |game|
-        game.goals
-    end
-    most_goals.max.to_i
+    choose_objects_by_id(@game_teams, team_id).map { |game| game.goals }.max
   end
 
   def fewest_goals_scored(team_id)
-    sorted_list = {}
-    teamid = @game_teams.find_all do |game|
-      game.team_id == team_id
-    end
-     most_goals = teamid.map do |game|
-        game.goals
-    end
-    most_goals.min.to_i
+    choose_objects_by_id(@game_teams, team_id).map { |game| game.goals }.min
   end
 end

@@ -6,13 +6,11 @@ class SeasonStats < Stats
   def most_tackles(season_id)
     teams_tackles_hash = Hash.new(0)
     games_list = list_games_by_season(season_id)
-  
     @game_teams.each do |row|
       if games_list.include?(row.game_id)
         teams_tackles_hash[row.team_id] += row.tackles.to_i
       end
     end
-
     highest_tackling_team_id = teams_tackles_hash.max_by{|k,v| v}[0]
     team_id_to_name(highest_tackling_team_id)   
   end 
@@ -20,13 +18,11 @@ class SeasonStats < Stats
   def fewest_tackles(season_id)
     teams_tackles_hash = Hash.new(0)
     games_list = list_games_by_season(season_id)
-
     @game_teams.each do |row|
       if games_list.include?(row.game_id)
         teams_tackles_hash[row.team_id] += row.tackles.to_i
       end
     end
-    
     lowest_tackling_team_id = teams_tackles_hash.min_by{|k,v| v}[0]
     team_id_to_name(lowest_tackling_team_id)
   end
@@ -41,7 +37,6 @@ class SeasonStats < Stats
         total_games_hash[row.head_coach] += 1 if row.result
       end
     end
-
     additional_hash = {}
     total_games_hash.each do |key, value|
       wins_hash.each do |key_v, value_v|
@@ -58,7 +53,6 @@ class SeasonStats < Stats
     wins_hash = Hash.new(0)
     total_games_hash = Hash.new(0)
     games_list = list_games_by_season(season_id)
-
     @game_teams.each do |row|
       if games_list.include?(row.game_id)
         wins_hash[row.head_coach] += 1 if row.result == "WIN"
@@ -66,7 +60,6 @@ class SeasonStats < Stats
         total_games_hash[row.head_coach] += 1 if row.result
       end
     end
-
     additional_hash = {}
     total_games_hash.each do |key, value|
       wins_hash.each do |key_v, value_v|
@@ -104,7 +97,6 @@ class SeasonStats < Stats
     team_id = teams_by_accuracy(season).max_by do |team_ratio|
       team_ratio.values
     end.keys.first
-  
     team = @teams.find do |team|
       team_id == team.team_id
     end
@@ -115,7 +107,6 @@ class SeasonStats < Stats
     team_id = teams_by_accuracy(season).min_by do |team_ratio|
       team_ratio.values
     end.keys.first
-  
     team = @teams.find do |team|
       team_id == team.team_id
     end

@@ -87,7 +87,7 @@ class SeasonStats < Stats
       game.game_id
     end
     games_teams_for_season = @game_teams.find_all do |game_team|
-     game_ids.include?(game_team.game_id)
+      game_ids.include?(game_team.game_id)
     end
     games_grouped_by_team = games_teams_for_season.group_by do |game_team|
       game_team.team_id
@@ -102,9 +102,7 @@ class SeasonStats < Stats
   
   def most_accurate_team(season)
     team_id = teams_by_accuracy(season).max_by do |team_ratio|
-  
       team_ratio.values
-  
     end.keys.first
   
     team = @teams.find do |team|
@@ -119,8 +117,8 @@ class SeasonStats < Stats
     end.keys.first
   
     team = @teams.find do |team|
-    team_id == team.team_id
+      team_id == team.team_id
     end
     team.team_name
-    end
+  end
 end

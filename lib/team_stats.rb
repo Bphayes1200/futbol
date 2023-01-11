@@ -52,28 +52,22 @@ class TeamStats < Stats
     all_wins = @game_teams.find_all { |game| game.team_id == team_id && game.result == "WIN"}
     all_games = @games.find_all { |game| game.home_team_id == team_id || game.away_team_id == team_id} 
     all_game_ids = all_wins.map {|game| game.game_id}
-
     all_games_opposing_team_ids =
       all_games.map do |game| 
         team_id == game.home_team_id ? game.away_team_id : game.home_team_id
       end
-
     all_games_hash = all_games_opposing_team_ids.tally
-
     all_games = []
     all_game_ids.each do |game_id|
       @games.each do |game| 
         all_games << game if game_id == game.game_id
       end 
     end 
-
     opposing_team_ids = 
       all_games.map do |game| 
         team_id == game.home_team_id ? game.away_team_id : game.home_team_id
       end
-
     id_hash = opposing_team_ids.tally
-
     final_breakdown = {}
     id_hash.each do |id, value| 
       all_games_hash.each do |game, games_value|
@@ -84,7 +78,6 @@ class TeamStats < Stats
     end
     favorite_opponent_id = nil
     final_breakdown.select { |id, win_percentage| favorite_opponent_id = id if win_percentage == final_breakdown.values.max}
-
     team_id_to_name(favorite_opponent_id)
   end
 
@@ -92,28 +85,22 @@ class TeamStats < Stats
     all_losses = @game_teams.find_all { |game| game.team_id == team_id && game.result == "LOSS"}
     all_games = @games.find_all { |game| game.home_team_id == team_id || game.away_team_id == team_id} 
     all_game_ids = all_losses.map {|game| game.game_id}
-
     all_games_opposing_team_ids =
       all_games.map do |game| 
         team_id == game.home_team_id ? game.away_team_id : game.home_team_id
       end
-
     all_games_hash = all_games_opposing_team_ids.tally
-
     all_games = []
     all_game_ids.each do |game_id|
       @games.each do |game| 
         all_games << game if game_id == game.game_id
       end 
     end 
-
     opposing_team_ids = 
       all_games.map do |game| 
         team_id == game.home_team_id ? game.away_team_id : game.home_team_id
       end
-
     id_hash = opposing_team_ids.tally
-
     final_breakdown = {}
     id_hash.each do |id, value| 
       all_games_hash.each do |game, games_value|
@@ -124,7 +111,6 @@ class TeamStats < Stats
     end
     favorite_opponent_id = nil
     final_breakdown.select { |id, win_percentage| favorite_opponent_id = id if win_percentage == final_breakdown.values.max}
-
     team_id_to_name(favorite_opponent_id)
   end
    

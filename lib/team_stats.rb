@@ -4,7 +4,6 @@ class TeamStats < Stats
   include Calculable
 
   def team_info(team_id)
-    team_info_hash = Hash.new(0)
     team = choose_objects_by_id(@teams, team_id)[0]
     { 'team_id' => team.team_id, 'franchise_id' => team.franchise_id, 'team_name' => team.team_name, 'abbreviation' => team.abbreviation, 'link' => team.link }
   end

@@ -20,14 +20,54 @@ RSpec.describe StatTracker do
     expect(@stat_tracker).to be_an_instance_of StatTracker
   end
 
+  it 'can calculate the average goals per game' do 
+    expect(@stat_tracker.average_goals_per_game).to eq(4.3)
+  end
 
+  it 'will calculate the average goals per game by season' do 
+    expect(@stat_tracker.average_goals_by_season["20122013"]).to eq(4.5)
+  end
 
+  it 'counts the number of games by season' do
+    expect(@stat_tracker.count_of_games_by_season).to eq({
 
+      "20122013"=>10, 
+      "20132014"=>10, 
+      "20142015"=>10
+      
+    })  
+  end
 
+  it "calculates home win %" do
+    expect(@stat_tracker.percentage_home_wins).to eq 0.48
+  end
+
+  it 'calculates visitor win %' do
+    expect(@stat_tracker.percentage_visitor_wins).to eq 0.32
+  end
+
+  it 'calculates percent of ties' do
+    expect(@stat_tracker.percentage_ties).to eq 0.19
+  end
 
   it 'names winningest coach of the season' do
     expect(@stat_tracker.winningest_coach("20132014")).to eq("Lindy Ruff")
     expect(@stat_tracker.winningest_coach("20122013")).to eq("Joel Quenneville")
+  end
+
+  it 'will calculate the highest scoring visitor' do 
+    expect(@stat_tracker.highest_scoring_visitor).to eq("Sporting Kansas City")
+  end
+
+  it 'will calculate the lowest scoring visitor' do 
+    expect(@stat_tracker.lowest_scoring_visitor).to eq("Columbus Crew SC")
+  end
+
+  it 'will calculate the highest scoring home team' do 
+    expect(@stat_tracker.highest_scoring_home_team).to eq("Seattle Sounders FC")
+  end
+  it 'will calculate the lowest scoring home team' do 
+    expect(@stat_tracker.lowest_scoring_home_team).to eq("Minnesota United FC")
   end
 
   it 'will calculate the lowest scoring home team' do 
@@ -81,7 +121,13 @@ RSpec.describe StatTracker do
     expect(@stat_tracker.fewest_goals_scored("1")).to eq 1
   end
 
+  it "can calculate the highest total score by both teams in a game" do
+    expect(@stat_tracker.highest_total_score).to eq(7)
+  end
 
+  it "can calculate the lowest total score by both teams in a game" do
+    expect(@stat_tracker.lowest_total_score).to eq(1)
+  end
 
   it "find the team with the best shot ratio in a season" do
     expect(@stat_tracker.most_accurate_team("20132014")).to eq("Toronto FC")
@@ -99,6 +145,11 @@ RSpec.describe StatTracker do
     expect(@stat_tracker.fewest_tackles("20132014")).to eq("Atlanta United")
   end
 
- 
- 
+  it "it can find the team with the highest average number of goals scored per game" do
+    expect(@stat_tracker.best_offense).to eq("Chicago Fire")
+  end
+
+  it "it can find the team with the lowest average number of goals scored per game" do
+    expect(@stat_tracker.worst_offense).to eq("Minnesota United FC")
+  end
 end

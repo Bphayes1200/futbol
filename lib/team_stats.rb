@@ -53,13 +53,9 @@ class TeamStats < Stats
     all_games = @games.find_all { |game| game.home_team_id == team_id || game.away_team_id == team_id} 
     all_game_ids = all_wins.map {|game| game.game_id}
 
-    all_games_opposing_team_ids = []
-      all_games.each do |game| 
-        if team_id == game.home_team_id
-          all_games_opposing_team_ids << game.away_team_id
-        else 
-          all_games_opposing_team_ids << game.home_team_id
-        end
+    all_games_opposing_team_ids =
+      all_games.map do |game| 
+        team_id == game.home_team_id ? game.away_team_id : game.home_team_id
       end
 
     all_games_hash = all_games_opposing_team_ids.tally
@@ -67,19 +63,13 @@ class TeamStats < Stats
     all_games = []
     all_game_ids.each do |game_id|
       @games.each do |game| 
-        if game_id == game.game_id
-          all_games << game 
-        end
+        all_games << game if game_id == game.game_id
       end 
     end 
 
-    opposing_team_ids = []
-      all_games.each do |game| 
-        if team_id == game.home_team_id
-          opposing_team_ids << game.away_team_id
-        else 
-          opposing_team_ids << game.home_team_id
-        end
+    opposing_team_ids = 
+      all_games.map do |game| 
+        team_id == game.home_team_id ? game.away_team_id : game.home_team_id
       end
 
     id_hash = opposing_team_ids.tally
@@ -103,13 +93,9 @@ class TeamStats < Stats
     all_games = @games.find_all { |game| game.home_team_id == team_id || game.away_team_id == team_id} 
     all_game_ids = all_losses.map {|game| game.game_id}
 
-    all_games_opposing_team_ids = []
-      all_games.each do |game| 
-        if team_id == game.home_team_id
-          all_games_opposing_team_ids << game.away_team_id
-        else 
-          all_games_opposing_team_ids << game.home_team_id
-        end
+    all_games_opposing_team_ids =
+      all_games.map do |game| 
+        team_id == game.home_team_id ? game.away_team_id : game.home_team_id
       end
 
     all_games_hash = all_games_opposing_team_ids.tally
@@ -117,19 +103,13 @@ class TeamStats < Stats
     all_games = []
     all_game_ids.each do |game_id|
       @games.each do |game| 
-        if game_id == game.game_id
-          all_games << game 
-        end
+        all_games << game if game_id == game.game_id
       end 
     end 
 
-    opposing_team_ids = []
-      all_games.each do |game| 
-        if team_id == game.home_team_id
-          opposing_team_ids << game.away_team_id
-        else 
-          opposing_team_ids << game.home_team_id
-        end
+    opposing_team_ids = 
+      all_games.map do |game| 
+        team_id == game.home_team_id ? game.away_team_id : game.home_team_id
       end
 
     id_hash = opposing_team_ids.tally
@@ -155,5 +135,4 @@ class TeamStats < Stats
   def fewest_goals_scored(team_id)
     choose_objects_by_id(@game_teams, team_id).map { |game| game.goals }.min
   end
-
 end

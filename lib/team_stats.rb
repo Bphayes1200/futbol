@@ -42,13 +42,10 @@ class TeamStats < Stats
   end
 
   def average_win_percentage(team_id)
-    games_by_team = @game_teams.find_all {|game| game.team_id == team_id}
-    total = games_by_team.count
-    wins = 0
-    games_by_team.each do |game|
-      wins += 1 if game.result == "WIN"
-    end
-    (wins/total.to_f).round(2)
+    games_of_team = choose_objects_by_id(@game_teams, team_id)
+    total_games_count = games_of_team.count
+    total_wins_count = games_of_team.find_all {|game| game.result == 'WIN'}.count
+    (total_wins_count.to_f/total_games_count).round(2)
   end
 
   def favorite_opponent(team_id)
